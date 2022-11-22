@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Buy Item 1</title>
+     <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <h1>{{item.name}}</h1>
+    <p>{{item.description}} 1</p>
+    <p>price - {{item.price}}</p>
+    <button id="buy-button">Buy</button>
+    <script type="text/javascript">
+      var stripe = Stripe('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
+      var buyButton = document.getElementById('buy-button');
+      buyButton.addEventListener('click', function() {
+        // Create a new Checkout Session using the server-side endpoint
+        // Redirect to Stripe Session Checkout
+        fetch('/buy/{{item.id}}', {method: 'GET'})
+        .then(response => {return response.json()})
+        .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+      });
+    </script>
+  <button id="add-cart">add cart</button>
+  <script>
+    var addButton = document.getElementById('add-cart');
+    addButton.addEventListener('click', function() {
+        fetch('/cart/{{item.id}}', {method: 'GET'})
+      });
+  </script>
+  </body>
+</html>
