@@ -19,12 +19,17 @@
         .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
       });
     </script>
-  <button id="add-cart">add cart</button>
-  <script>
-    var addButton = document.getElementById('add-cart');
-    addButton.addEventListener('click', function() {
-        fetch('/cart/{{item.id}}', {method: 'GET'})
-      });
-  </script>
+    <form action="{% url 'store:cart_add' item.id %}" method="post">
+      {{ cart_product_form }}
+      {% csrf_token %}
+      <input type="submit" value="Добавить в корзину" class="">
+    </form>
+<!--  <button id="add-cart">add cart</button>-->
+<!--  <script>-->
+<!--    var addButton = document.getElementById('add-cart');-->
+<!--    addButton.addEventListener('click', function() {-->
+<!--        fetch('cart/add/{{item.id}}', {method: 'POST'})-->
+<!--      });-->
+<!--  </script>-->
   </body>
 </html>

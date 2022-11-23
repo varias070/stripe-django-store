@@ -43,6 +43,7 @@ def show_item(request, item_id):
 def cart_add(request, item_id):
     cart = Cart(request)
     item = get_object_or_404(Item, id=item_id)
+    print(item)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
@@ -50,14 +51,13 @@ def cart_add(request, item_id):
     return redirect('store:cart_detail')
 
 
-def cart_remove(request, product_id):
+def cart_remove(request, item_id):
     cart = Cart(request)
-    item = get_object_or_404(Item, id=product_id)
+    item = get_object_or_404(Item, id=item_id)
     cart.remove(item)
     return redirect('store:cart_detail')
 
 
 def cart_detail(request):
     cart = Cart(request)
-    return HttpResponse(cart)
-
+    return render(request, 'store/cart.html', {'cart': cart})
