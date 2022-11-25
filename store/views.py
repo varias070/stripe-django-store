@@ -1,8 +1,10 @@
 import stripe
 
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 
 
 from .cart import Cart
@@ -11,6 +13,11 @@ from .forms import CartAddProductForm, OrderCreate
 
 stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 bead_list = ['[', ']', '"', "'", ',']
+
+
+class CatalogView(ListView):
+    model = Item
+    template_name = 'store/catalog.html'
 
 
 def create_checkout_session(request, item_id):
@@ -52,6 +59,15 @@ def create_checkout_session_for_order(request, order_id):
     )
     return JsonResponse({"id": session['id']})
 
+
+class ItemView(DetailView):
+    model = Item
+    template_name = 'store/item.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cart_product_form'] = CartAddProductForm()
+        return context
 
 def show_item(request, item_id):
     item = get_object_or_404(Item, id=item_id)

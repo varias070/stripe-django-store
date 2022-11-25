@@ -1,9 +1,6 @@
-<html>
-  <head>
-    <title>Buy Item 1</title>
-     <script src="https://js.stripe.com/v3/"></script>
-  </head>
-  <body>
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
     <h1>{{item.name}}</h1>
     <p>{{item.description}} 1</p>
     <p>price - {{item.price}}</p>
@@ -24,5 +21,5 @@
       {% csrf_token %}
       <input type="submit" value="add cart" class="">
     </form>
-  </body>
-</html>
+{% endblock %}
+

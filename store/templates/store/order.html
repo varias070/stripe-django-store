@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://js.stripe.com/v3/"></script>
-    <title>Title</title>
-</head>
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
 <body>
         <table>
   <thead>
@@ -13,7 +9,6 @@
         <th>Quantity</th>
         <th>Unit price</th>
         <th>Price</th>
-        <th>Delete</th>
         <tbody>
      {% for item in cart %}
              <tr>
@@ -41,5 +36,4 @@
         </tr>
         </tbody>
     </table>
-</body>
-</html>
+{% endblock %}
