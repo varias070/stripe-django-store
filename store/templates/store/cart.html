@@ -22,24 +22,12 @@
             <tr>
                 <td>Total price</td>
                 <td>{{ cart.get_total_price }}</td>
-                <td><button id="buy-button">Buy</button></td>
                 <td>
                         <form action="{% url 'store:create_order' %}" method="post">
                           {% csrf_token %}
                             <input type="submit" value="order create" id="order_create">
                         </form>
                 </td>
-                <script type="text/javascript">
-                      var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
-                      var buyButton = document.getElementById('buy-button');
-                      buyButton.addEventListener('click', function() {
-                        // Create a new Checkout Session using the server-side endpoint
-                        // Redirect to Stripe Session Checkout
-                        fetch('/buy/{{item.id}}', {method: 'GET'})
-                        .then(response => {return response.json()})
-                        .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
-                      });
-                </script>
         </tr>
         </tbody>
     </table>

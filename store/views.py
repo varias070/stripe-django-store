@@ -69,29 +69,26 @@ class ItemView(DetailView):
         context['cart_product_form'] = CartAddProductForm()
         return context
 
-def show_item(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
-    cart_product_form = CartAddProductForm()
-    return render(request, 'store/item.html', {'item': item, 'cart_product_form': cart_product_form})
 
+class OrderView(DetailView):
+    model = Order
+    template_name = 'store/order.html'
 
-def show_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    cart = Cart(request)
-    return render(request, 'store/order.html', {'order': order, 'cart': cart})
+    def post(self, request):
+        cart = Cart(request)
+        items = cart.__dict__['cart'].keys()
+        items_ids = [i for i in items]
+        order = Order(price=cart.get_total_price())
+        order.save()
+        for item_id in items_ids:
+            order.items.add(item_id)
+        order.save()
+        return redirect(f"show_order/{order.id}")
 
-
-@require_POST
-def create_order(request):
-    cart = Cart(request)
-    items = cart.__dict__['cart'].keys()
-    items_ids = [i for i in items]
-    order = Order(price=cart.get_total_price())
-    order.save()
-    for item_id in items_ids:
-        order.items.add(item_id)
-    order.save()
-    return redirect(f"show_order/{order.id}")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cart'] = Cart(self.request)
+        return context
 
 
 @require_POST
