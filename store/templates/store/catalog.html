@@ -1,0 +1,7 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+    {% for item in object_list %}
+    <a href="{% url 'store:show_item' item.pk %}">{{ item.name }}</a>
+    {% endfor %}
+{% endblock %}
