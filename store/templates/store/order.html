@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://js.stripe.com/v3/"></script>
     <title>Title</title>
 </head>
 <body>
-    <table>
+        <table>
   <thead>
     <tr>
         <th>Product</th>
@@ -20,26 +21,19 @@
                  <td>{{ item.quantity }}</td>
                  <td>{{ item.price }}</td>
                  <td id="total_price">{{ item.total_price }}</td>
-                 <td><a href="{% url 'store:cart_remove' item.product.pk %}" >Delete</a></td>
              </tr>
     {% endfor %}
             <tr>
                 <td>Total price</td>
                 <td>{{ cart.get_total_price }}</td>
                 <td><button id="buy-button">Buy</button></td>
-                <td>
-                        <form action="{% url 'store:create_order' %}" method="post">
-                          {% csrf_token %}
-                            <input type="submit" value="order create" id="order_create">
-                        </form>
-                </td>
                 <script type="text/javascript">
                       var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
                       var buyButton = document.getElementById('buy-button');
                       buyButton.addEventListener('click', function() {
                         // Create a new Checkout Session using the server-side endpoint
                         // Redirect to Stripe Session Checkout
-                        fetch('/buy/{{item.id}}', {method: 'GET'})
+                        fetch('/order/buy/{{order.id}}', {method: 'GET'})
                         .then(response => {return response.json()})
                         .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
                       });

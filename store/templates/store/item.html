@@ -22,14 +22,7 @@
     <form action="{% url 'store:cart_add' item.id %}" method="post">
       {{ cart_product_form }}
       {% csrf_token %}
-      <input type="submit" value="Добавить в корзину" class="">
+      <input type="submit" value="add cart" class="">
     </form>
-<!--  <button id="add-cart">add cart</button>-->
-<!--  <script>-->
-<!--    var addButton = document.getElementById('add-cart');-->
-<!--    addButton.addEventListener('click', function() {-->
-<!--        fetch('cart/add/{{item.id}}', {method: 'POST'})-->
-<!--      });-->
-<!--  </script>-->
   </body>
 </html>

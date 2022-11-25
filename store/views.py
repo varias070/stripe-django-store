@@ -6,10 +6,11 @@ from django.views.decorators.http import require_POST
 
 
 from .cart import Cart
-from .models import Item
-from .forms import CartAddProductForm
+from .models import Item, Order
+from .forms import CartAddProductForm, OrderCreate
 
 stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
+bead_list = ['[', ']', '"', "'", ',']
 
 
 def create_checkout_session(request, item_id):
@@ -29,7 +30,26 @@ def create_checkout_session(request, item_id):
         success_url='http://localhost:8000/',
         cancel_url='http://localhost:8000/item/1/',
     )
-    print(session)
+    return JsonResponse({"id": session['id']})
+
+
+def create_checkout_session_for_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    session = stripe.checkout.Session.create(
+        line_items=[{
+          'price_data': {
+            'currency': 'usd',
+            'product_data': {
+              'name': "order",
+            },
+            'unit_amount': order.price,
+          },
+          'quantity': 1,
+        }],
+        mode='payment',
+        success_url='http://localhost:8000/',
+        cancel_url=f'http://localhost:8000/show_order/{order_id}/',
+    )
     return JsonResponse({"id": session['id']})
 
 
@@ -37,6 +57,25 @@ def show_item(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     cart_product_form = CartAddProductForm()
     return render(request, 'store/item.html', {'item': item, 'cart_product_form': cart_product_form})
+
+
+def show_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    cart = Cart(request)
+    return render(request, 'store/order.html', {'order': order, 'cart': cart})
+
+
+@require_POST
+def create_order(request):
+    cart = Cart(request)
+    items = cart.__dict__['cart'].keys()
+    items_ids = [i for i in items]
+    order = Order(price=cart.get_total_price())
+    order.save()
+    for item_id in items_ids:
+        order.items.add(item_id)
+    order.save()
+    return redirect(f"show_order/{order.id}")
 
 
 @require_POST
@@ -60,4 +99,5 @@ def cart_remove(request, item_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    return render(request, 'store/cart.html', {'cart': cart})
+    form = OrderCreate()
+    return render(request, 'store/cart.html', {'cart': cart, "form": form})
