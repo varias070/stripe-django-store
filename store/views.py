@@ -12,7 +12,6 @@ from .models import Item, Order
 from .forms import CartAddProductForm, OrderCreate
 
 stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
-bead_list = ['[', ']', '"', "'", ',']
 
 
 class CatalogView(ListView):
@@ -35,7 +34,7 @@ def create_checkout_session(request, item_id):
         }],
         mode='payment',
         success_url='http://localhost:8000/',
-        cancel_url='http://localhost:8000/item/1/',
+        cancel_url='http://localhost:8000/item/irem_id/',
     )
     return JsonResponse({"id": session['id']})
 
